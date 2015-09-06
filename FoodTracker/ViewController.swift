@@ -8,12 +8,14 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITextFieldDelegate {
+class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: Properties
     
     @IBOutlet weak var nameTextField: UITextField!
     
     @IBOutlet weak var mealNameLabel: UILabel!
+    
+    @IBOutlet weak var photoImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,8 +34,34 @@ class ViewController: UIViewController, UITextFieldDelegate {
         mealNameLabel.text = textField.text
     }
     
+    //MARK: UIImagePickerControllerDelegate
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        //this uses the original image
+        let selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+        
+        //have the image view display selectedImage
+        photoImageView.image = selectedImage
+        
+        //dismiss picker
+        dismissViewControllerAnimated(true, completion: nil)
+    }
     
     //MARK: Actions
+    
+    @IBAction func selectImageFromPhotoLibrary(sender: UITapGestureRecognizer) {
+        //Hide keyboard
+        nameTextField.resignFirstResponder()
+        
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.sourceType = .PhotoLibrary
+        imagePickerController.delegate = self
+        presentViewController(imagePickerController, animated: true, completion: nil)
+    }
     
     @IBAction func setDefaultLabelText(sender: UIButton) {
         mealNameLabel.text = "Default Text"
